@@ -34,7 +34,9 @@
 # Compile Files
 .xmake/
 build/
+.vscode/
 
 # Output Files
 output.png
 HypoxRayTracer
+HypoxRayTracer_Release

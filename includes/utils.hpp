@@ -3,6 +3,10 @@
 
 #include <memory>
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 // Eigen Part
 #include <Eigen/Core>
 #include <Eigen/Dense>
