@@ -4,11 +4,11 @@
 #include "utils.hpp"
 
 // For HypoxRayTracer
-struct LightModel {
-    Vec3f Light_Ambient;
-    Vec3f Light_Diffuse;
-    Vec3f Light_Specular;
-    float Light_Shininess;
+struct MaterialModel {
+    Vec3f Ambient;
+    Vec3f Diffuse;
+    Vec3f Specular;
+    float Shininess;
 };
 
 struct Interaction {
@@ -22,7 +22,7 @@ struct Interaction {
     Vec3f normal;
     InterType type;
     Vec2f uv;
-    LightModel lightModel;
+    MaterialModel matmodel;
 };
 
 // For Light Former Front End

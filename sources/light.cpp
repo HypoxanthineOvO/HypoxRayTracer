@@ -27,6 +27,7 @@ bool SquareAreaLight::intersect(const Ray& ray, Interaction& interaction) const 
 
     if (direction.dot(normal) <= EPS) return false;
 
+
     // Construct the Rectangle
     Rectangle light_rect = Rectangle(position, size, normal, tangent);
 

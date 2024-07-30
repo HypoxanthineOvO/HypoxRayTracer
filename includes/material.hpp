@@ -8,7 +8,7 @@ public:
     Material() = default;
     virtual ~Material() = default;
 
-    [[nodisgard]] virtual LightModel evaluate(
+    [[nodisgard]] virtual MaterialModel evaluate(
         Interaction& interaction
     ) const = 0;
 };
@@ -22,7 +22,7 @@ public:
     LambertianMaterial(const Vec3f& color, const Vec3f& specular_color, float shininess = 16.0f):
         ambient_color(color), diffuse_color(color), specular_color(specular_color), shininess(shininess) {}
 
-    [[nodiscard]] LightModel evaluate(
+    [[nodiscard]] MaterialModel evaluate(
         Interaction& interaction
     ) const override;
 

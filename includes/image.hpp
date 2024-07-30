@@ -30,6 +30,7 @@ public:
         data[x + y * resolution.x()] = color;
     }
 
+    void showImage();
     void writeImage(const std::string& filename);
 private:
     std::vector<Vec3f> data;

@@ -13,6 +13,8 @@ public:
     void render();
 
 private:
+    Vec3f evalRadiance(const Ray& ray, Interaction& interaction) const;
+
     std::shared_ptr<Camera> camera;
     std::shared_ptr<Scene> scene;
     int spp, max_depth;

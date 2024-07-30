@@ -16,7 +16,7 @@ bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
         result.position = ray(t);
         result.normal = normal.normalized();
         result.type = Interaction::GEOMETRY;
-        result.lightModel = material->evaluate(result);
+        result.matmodel = material->evaluate(result);
 
         interaction = result;
         return true;
@@ -28,7 +28,7 @@ bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
     Vec3f o = ray.getOrigin(), d = ray.getDirection();
     float width = size.x(), height = size.y();
 
-    if (d.dot(normal) == 0) {
+    if (d.dot(normal) <= EPS) {
         return false;
     }
 
@@ -46,7 +46,7 @@ bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
         result.position = intersect_point;
         result.normal = normal.normalized();
         result.type = Interaction::GEOMETRY;
-        result.lightModel = material->evaluate(result);
+        result.matmodel = material->evaluate(result);
 
         interaction = result;
         return true;
@@ -119,7 +119,7 @@ bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
         result.position = position;
         result.normal = normal.normalized();
         result.type = Interaction::GEOMETRY;
-        result.lightModel = material->evaluate(result);
+        result.matmodel = material->evaluate(result);
         
         interaction = result;
         return true;
@@ -138,7 +138,7 @@ bool Ground::intersect(const Ray& ray, Interaction& interaction) const {
     result.position = ray(t);
     result.normal = Vec3f(0, 0, 1);
     result.type = Interaction::GEOMETRY;
-    result.lightModel = material->evaluate(result);
+    result.matmodel = material->evaluate(result);
 
     interaction = result;
     return true;

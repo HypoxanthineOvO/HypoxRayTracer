@@ -2,6 +2,16 @@
 #include <stb_image_write.h>
 
 #include "image.hpp"
+#include <iostream>
+
+void Image::showImage() {
+    for(int y = 0; y < resolution.y(); y++) {
+        for(int x = 0; x < resolution.x(); x++) {
+            Vec3f color = getPixel(x, y);
+            std::cout << color.x() << " " << color.y() << " " << color.z() << std::endl;
+        }
+    }
+}
 
 void Image::writeImage(const std::string& filename) {
     std::vector<uint8_t> rgb_data(resolution.x() * resolution.y() * 3);

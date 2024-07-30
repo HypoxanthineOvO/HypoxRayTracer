@@ -81,23 +81,23 @@ protected:
     float z;
 };
 
-class Mesh: Geometry {
-public:
-    Mesh() = default;
-    Mesh(
-        const std::vector<Vec3f>& vertices,
-        const std::vector<Vec3f>& normals,
-        const std::vector<int>& v_indices,
-        const std::vector<int>& n_indices
-    ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {}
+// class Mesh: Geometry {
+// public:
+//     Mesh() = default;
+//     Mesh(
+//         const std::vector<Vec3f>& vertices,
+//         const std::vector<Vec3f>& normals,
+//         const std::vector<int>& v_indices,
+//         const std::vector<int>& n_indices
+//     ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {}
     
-    bool intersect(const Ray& ray, Interaction& interaction) const override;
+//     bool intersect(const Ray& ray, Interaction& interaction) const override;
 
-private:
-    std::vector<Vec3f> vertices;
-    std::vector<Vec3f> normals;
-    std::vector<int> v_indices;
-    std::vector<int> n_indices;
-};
+// private:
+//     std::vector<Vec3f> vertices;
+//     std::vector<Vec3f> normals;
+//     std::vector<int> v_indices;
+//     std::vector<int> n_indices;
+// };
 
 #endif // GEOMETRY_HPP_

@@ -12,7 +12,7 @@ public:
     [[nodiscard]] Vec3f at (float t) const {
         return origin + t * direction;
     }
-    [[nodisgard]] Vec3f operator() (float t) const {
+    [[nodiscard]] Vec3f operator() (float t) const {
         return at(t);
     }
 
@@ -36,14 +36,14 @@ class Camera {
 public:
     Camera(): fov(45), focal_length(1.0), image(nullptr) {}
     Camera(std::shared_ptr<Image> image): position({0, -1, 0}), fov(45), focal_length(1.0), image(image) {
-        lookAt(Vec3f(0, 0, 0), Vec3f(0, 1, 0));
+        lookAt(Vec3f(0, 0, 0), Vec3f(0, 0, 1));
     }
     
 
-    void lookAt(const Vec3f look_at, const Vec3f& ref_up) {
-        forward = (look_at - position).normalized();
-        right = forward.cross(ref_up).normalized();
-        up = right.cross(forward).normalized();
+    void lookAt(const Vec3f look_at, const Vec3f& ref_up = Vec3f(0, 1, 0)) {
+        forward = -(look_at - position).normalized();
+        right = ref_up.cross(forward).normalized();
+        up = forward.cross(right).normalized();
         // Generate x y scale
         float y_scale = tanf(utils::radians(fov / 2)), x_scale = y_scale * image->getAspectRatio();
         up *= y_scale * focal_length;
@@ -51,11 +51,20 @@ public:
     }
 
     Ray generateRay(float dx, float dy) {
-        auto resolution = image->getResolution();
-        float normalized_dx = (dx + 0.5f) / resolution.x(), normalized_dy = (dy + 0.5f) / resolution.y();
-        return Ray(
-            position, normalized_dx * right + normalized_dy * up + focal_length * forward
-        );
+        // Get the position of screen center.
+        Vec3f screen_center = position - focal_length * forward;
+
+        // Get the bias of screen point
+        Vec2i resolution = getImage()->getResolution();
+        float aspect_ratio = getImage()->getAspectRatio();
+        Vec3f delta_x = (2 * ((dx ) / (resolution.x())) - 1)
+            * focal_length * aspect_ratio * tanf(fov * PI / 360)
+            * right;
+        Vec3f delta_y = (2 * ((dy ) / (resolution.y())) - 1)
+            * focal_length * tanf(fov * PI / 360)
+            * up;
+        Vec3f screen_point_location = screen_center + delta_x + delta_y;
+        return Ray(position, (screen_point_location-position));
     }
 
     // Getter
