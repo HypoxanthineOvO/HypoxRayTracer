@@ -7,7 +7,7 @@
 
 class Ray {
 public:
-    Ray(const Vec3f& origin, const Vec3f& direction): origin(origin), direction(direction) {}
+    Ray(const Vec3f& origin, const Vec3f& direction): origin(origin), direction(direction), t_min(0.1), t_max(100) {}
     
     [[nodiscard]] Vec3f at (float t) const {
         return origin + t * direction;

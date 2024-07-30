@@ -17,8 +17,10 @@ struct Interaction {
         LIGHT,
         GEOMETRY
     };
+    float distance; // Distance of the ray
     Vec3f position;
     Vec3f normal;
+    InterType type;
     Vec2f uv;
     LightModel lightModel;
 };

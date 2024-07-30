@@ -37,6 +37,28 @@ protected:
     Vec3f normal;
 };
 
+class Ellipsoid: public Geometry {
+public:
+    // Construct Ellipsoid as a sphere
+    Ellipsoid(const Vec3f& pos): p(pos), a({1, 0, 0}), b({0, 1, 0}), c({0, 0, 1}) {}
+    // Construct Ellipsoid as an ellipsoid
+    Ellipsoid(const Vec3f& pos, const Vec3f& a, const Vec3f& b, const Vec3f& c): p(pos), a(a), b(b), c(c) {}
+
+    bool intersect(const Ray& ray, Interaction& interaction) const override;
+private:
+    Vec3f p;
+    Vec3f a, b, c;
+};
+
+class Ground: public Geometry {
+public:
+    Ground(float z): z(z) {}
+
+    bool intersect(const Ray& ray, Interaction& interaction) const override;
+protected:
+    float z;
+};
+
 class Mesh: Geometry {
 public:
     Mesh() = default;
