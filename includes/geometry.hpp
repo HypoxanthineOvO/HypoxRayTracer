@@ -37,6 +37,28 @@ protected:
     Vec3f normal;
 };
 
+class Rectangle: public Geometry {
+public:
+    Rectangle(const Vec3f& position, const Vec2f& size, const Vec3f& normal, const Vec3f& tangent): position(position), size(size), normal(normal), tangent(tangent) {}
+
+    bool intersect(const Ray& ray, Interaction& interaction) const override;
+
+    // Getters and Setters
+    [[nodiscard]] Vec3f getPosition() const { return position; }
+    void setPosition(const Vec3f& pos) { position = pos; }
+    [[nodiscard]] Vec2f getSize() const { return size; }
+    void setSize(const Vec2f& s) { size = s; }
+    [[nodiscard]] Vec3f getNormal() const { return normal; }
+    void setNormal(const Vec3f& n) { normal = n; }
+    [[nodiscard]] Vec3f getTangent() const { return tangent; }
+    void setTangent(const Vec3f& t) { tangent = t; }
+private:
+    Vec3f position;
+    Vec2f size;
+    Vec3f normal;
+    Vec3f tangent;
+};
+
 class Ellipsoid: public Geometry {
 public:
     // Construct Ellipsoid as a sphere

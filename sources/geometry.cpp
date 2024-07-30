@@ -24,6 +24,36 @@ bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
     return false;
 }
 
+bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
+    Vec3f o = ray.getOrigin(), d = ray.getDirection();
+    float width = size.x(), height = size.y();
+
+    if (d.dot(normal) == 0) {
+        return false;
+    }
+
+    // Intersect with the plane
+    float t = (position - o).dot(normal) / d.dot(normal);
+    Vec3f intersect_point = ray(t);
+    Vec3f delta_vec = intersect_point - position;
+
+    Vec3f y_tangent = normal.cross(tangent);
+    float dw = delta_vec.dot(tangent.normalized()), dh = delta_vec.dot(y_tangent.normalized());
+
+    if (t >= 0 && -width/2 <= dw && dw <= width/2 && -height/2 <= dh && dh <= height/2) {
+        Interaction result;
+        result.distance = t;
+        result.position = intersect_point;
+        result.normal = normal.normalized();
+        result.type = Interaction::GEOMETRY;
+        result.lightModel = material->evaluate(result);
+
+        interaction = result;
+        return true;
+    }
+    return false;
+}
+
 
 bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
     // Transform to unit sphere
