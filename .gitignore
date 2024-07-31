@@ -35,6 +35,7 @@
 .xmake/
 build/
 .vscode/
+tests/
 
 # Output Files
 output.png

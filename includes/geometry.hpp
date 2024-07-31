@@ -13,6 +13,10 @@ public:
 
     virtual bool intersect(const Ray& ray, Interaction& interaction) const = 0;
 
+    virtual std::string getType() const {
+        return "Geometry";
+    }
+
     // Getters and Setters
     [[nodiscard]] std::shared_ptr<Material> getMaterial() const {
         return material;
@@ -31,6 +35,10 @@ public:
     }
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
+
+    std::string getType() const override {
+        return "Triangle";
+    }
     
 protected:
     Vec3f v0, v1, v2;
@@ -42,6 +50,10 @@ public:
     Rectangle(const Vec3f& position, const Vec2f& size, const Vec3f& normal, const Vec3f& tangent): position(position), size(size), normal(normal), tangent(tangent) {}
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
+
+    std::string getType() const override {
+        return "Rectangle";
+    }
 
     // Getters and Setters
     [[nodiscard]] Vec3f getPosition() const { return position; }
@@ -67,6 +79,10 @@ public:
     Ellipsoid(const Vec3f& pos, const Vec3f& a, const Vec3f& b, const Vec3f& c): p(pos), a(a), b(b), c(c) {}
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
+
+    std::string getType() const override {
+        return "Ellipsoid";
+    }
 private:
     Vec3f p;
     Vec3f a, b, c;
@@ -77,6 +93,10 @@ public:
     Ground(float z): z(z) {}
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
+
+    std::string getType() const override {
+        return "Ground";
+    }
 protected:
     float z;
 };

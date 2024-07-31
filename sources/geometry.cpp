@@ -2,7 +2,6 @@
 
 bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
     // Moller Trumbore Algorithm
-    Interaction result;
     Vec3f o = ray.getOrigin(), d = ray.getDirection();
     float tmin = ray.getTMin(), tmax = ray.getTMax();
 
@@ -12,13 +11,12 @@ bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
     float t = ans.x(), u = ans.y(), v = ans.z();
 
     if (t >= tmin && u >= 0 && v >= 0 && u + v <= 1) {
-        result.distance = t;
-        result.position = ray(t);
-        result.normal = normal.normalized();
-        result.type = Interaction::GEOMETRY;
-        result.matmodel = material->evaluate(result);
+        interaction.distance = t;
+        interaction.position = ray(t);
+        interaction.normal = normal.normalized();
+        interaction.type = Interaction::InterType::GEOMETRY;
+        interaction.matmodel = material->evaluate(interaction);
 
-        interaction = result;
         return true;
     }
     return false;
@@ -28,10 +26,9 @@ bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
     Vec3f o = ray.getOrigin(), d = ray.getDirection();
     float width = size.x(), height = size.y();
 
-    if (d.dot(normal) <= EPS) {
+    if (std::abs(d.dot(normal)) <= EPS) {
         return false;
     }
-
     // Intersect with the plane
     float t = (position - o).dot(normal) / d.dot(normal);
     Vec3f intersect_point = ray(t);
@@ -41,14 +38,13 @@ bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
     float dw = delta_vec.dot(tangent.normalized()), dh = delta_vec.dot(y_tangent.normalized());
 
     if (t >= 0 && -width/2 <= dw && dw <= width/2 && -height/2 <= dh && dh <= height/2) {
-        Interaction result;
-        result.distance = t;
-        result.position = intersect_point;
-        result.normal = normal.normalized();
-        result.type = Interaction::GEOMETRY;
-        result.matmodel = material->evaluate(result);
+        interaction.distance = t;
+        interaction.position = intersect_point;
+        interaction.normal = normal.normalized();
+        interaction.type = Interaction::InterType::GEOMETRY;
+        interaction.matmodel = material->evaluate(interaction);
 
-        interaction = result;
+
         return true;
     }
     return false;
@@ -91,7 +87,7 @@ bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
     float delta = b * b - 4 * a * c;
     
     if (delta > 0) {
-        float t1 = (-b - sqrt(delta)) / (2 * a), t2 = (-b + sqrt(delta)) / (2 * a);
+        float t1 = (-b - sqrtf(delta)) / (2 * a), t2 = (-b + sqrtf(delta)) / (2 * a);
         float t;
         if (t1 > 0 && t2 > 0) {
             t = std::min(t1, t2);
@@ -106,22 +102,27 @@ bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
             return false;
         }
 
-        if (t < ray.getTMin() || t > ray.getTMax()) {
+        if (t < ray.getTMin()){// || t > ray.getTMax()) {
             return false;
         }
 
-        Mat3f M_inv_transpose = M_inv.block<3, 3>(0, 0).transpose();
-        Vec3f position = ray(t);
-        Vec3f normal = M_inv_transpose * (position);
-
-        Interaction result;
-        result.distance = t;
-        result.position = position;
-        result.normal = normal.normalized();
-        result.type = Interaction::GEOMETRY;
-        result.matmodel = material->evaluate(result);
+        //Mat3f M_inv_transpose = M_inv.block<3, 3>(0, 0).transpose();
+        Mat3f M_3 = M.block(0, 0, 3, 3);
+        Mat3f M_inv_transpose = M_3.inverse().transpose();
         
-        interaction = result;
+        //Vec3f position = ray(t);
+        //Vec3f normal = M_inv_transpose * (position - p);
+
+        Vec3f position = origin_transformed + t * direction_transformed;
+        Vec3f normal = M_inv_transpose * position;
+
+
+        interaction.distance = t;
+        interaction.position = ray(t);
+        interaction.normal = normal.normalized();
+        interaction.type = Interaction::InterType::GEOMETRY;
+        interaction.matmodel = material->evaluate(interaction);
+
         return true;
     }
     return false;
@@ -129,17 +130,15 @@ bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
 
 bool Ground::intersect(const Ray& ray, Interaction& interaction) const {
     float t = (z - ray.getOrigin().z()) / ray.getDirection().z();
-    if (t < ray.getTMin() || t > ray.getTMax()) {
+    if (t < ray.getTMin()){// || t > ray.getTMax()) {
         return false;
     }
+    
+    interaction.distance = t;
+    interaction.position = ray(t);  
+    interaction.normal = Vec3f(0, 0, 1);
+    interaction.type = Interaction::InterType::GEOMETRY;
+    interaction.matmodel = material->evaluate(interaction);
 
-    Interaction result;
-    result.distance = t;
-    result.position = ray(t);
-    result.normal = Vec3f(0, 0, 1);
-    result.type = Interaction::GEOMETRY;
-    result.matmodel = material->evaluate(result);
-
-    interaction = result;
     return true;
 }

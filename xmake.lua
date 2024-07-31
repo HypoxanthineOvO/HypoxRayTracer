@@ -1,11 +1,9 @@
 add_languages("c++17")
-
 local depends = {
-    "eigen", "stb"
+    "eigen", "stb", "openmp"
 }
 
 add_requires(depends)
-
 
 target("HypoxRayTracer")
     add_includedirs("includes")

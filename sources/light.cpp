@@ -23,20 +23,28 @@ VPLs SquareAreaLight::getVPLs() const {
 }
 
 bool SquareAreaLight::intersect(const Ray& ray, Interaction& interaction) const {
-    Vec3f origin = ray.getOrigin(), direction = ray.getDirection();
+    //Vec3f origin = ray.getOrigin(), direction = ray.getDirection();
+    Vec3f o = ray.getOrigin(), d = ray.getDirection();
+    float width = size.x(), height = size.y();
 
-    if (direction.dot(normal) <= EPS) return false;
+    if (std::abs(d.dot(normal)) <= EPS) {
+        return false;
+    }
+    // Intersect with the plane
+    float t = (position - o).dot(normal) / d.dot(normal);
+    Vec3f intersect_point = ray(t);
+    Vec3f delta_vec = intersect_point - position;
+
+    Vec3f y_tangent = normal.cross(tangent);
+    float dw = delta_vec.dot(tangent.normalized()), dh = delta_vec.dot(y_tangent.normalized());
+
+    if (t >= 0 && -width/2 <= dw && dw <= width/2 && -height/2 <= dh && dh <= height/2) {
+        interaction.distance = t;
+        interaction.position = intersect_point;
+        interaction.normal = normal.normalized();
+        interaction.type = Interaction::InterType::LIGHT;
 
 
-    // Construct the Rectangle
-    Rectangle light_rect = Rectangle(position, size, normal, tangent);
-
-    Interaction result;
-    if (light_rect.intersect(ray, result)) {
-        interaction = result;
-
-        interaction.type = Interaction::LIGHT; // Only need to set the type
-        
         return true;
     }
     return false;

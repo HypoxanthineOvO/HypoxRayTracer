@@ -1,4 +1,5 @@
 #include <iostream>
+#include <chrono>
 
 #include "HypoxRayTracer.hpp"
 
@@ -71,11 +72,9 @@ int main() {
     puts("==========    HypoxRayTracer    ==========");
     
     // Camera
-    std::shared_ptr<Image> image = std::make_shared<Image>(200, 200);
+    std::shared_ptr<Image> image = std::make_shared<Image>(400, 400);
     std::shared_ptr<Camera> camera = std::make_shared<Camera>();
     camera->setImage(image);
-
-
 
     puts("==========   Camera Generated   ==========");
     // Scene
@@ -83,9 +82,13 @@ int main() {
     Generate_Camera_Scene(camera, scene);
     puts("==========  Scene  Constructed  ==========");
     // Render
-    std::unique_ptr<HypoxRayTracer> rayTracer = std::make_unique<HypoxRayTracer>(camera, scene);
+    std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene);
+    // Time the rendering process
     puts("==========  Rendering  Started  ==========");
-    rayTracer->render();
+    auto start = std::chrono::steady_clock::now();
+    RayTracer->render();
+    auto end = std::chrono::steady_clock::now();
+    printf("Time elapsed: %.2f ms.\n", std::chrono::duration<double, std::milli>(end - start).count());
     puts("==========  Rendering Finished  ==========");
     // Save image
     image->writeImage("output.png");

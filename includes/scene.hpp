@@ -14,7 +14,7 @@ public:
         Interaction interaction;
         return (
             intersect(ray, interaction) && 
-            interaction.type == Interaction::InterType::GEOMETRY
+            interaction.type != Interaction::InterType::LIGHT
         );
     };
 
