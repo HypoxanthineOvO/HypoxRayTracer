@@ -57,9 +57,9 @@ public:
 
     SquareAreaLight(const LightConfig& light_config):
         Light(light_config.position, Vec3f(1, 1, 1)) {
+        size = light_config.size;
         // TODO(Be Modified)
-        color = Vec3f(1, 1, 1);
-        normal = Vec3f(0, 0, -1);
+        normal = Vec3f(0, -1, 0);
         tangent = Vec3f(1, 0, 0);
     }
 

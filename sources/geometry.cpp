@@ -199,6 +199,12 @@ void Mesh::loadObj(const std::string& path) {
         }
     }
 
+    // Assign to this object
+    this->vertices = vertices;
+    this->normals = normals;
+    this->v_indices = v_indices;
+    this->n_indices = n_indices;
+
     std::cout << "Vertices: " << vertices.size() << std::endl;
     std::cout << "Normals: " << normals.size() << std::endl;
 }
@@ -210,6 +216,36 @@ void Mesh::transformObj(Vec3f translation, float scale) {
     }
 }
 
-bool Mesh::intersect(const Ray& ray, Interaction& interaction) const {
+bool Mesh::intersectTriangle(const Ray& ray, Interaction& interaction,  const Vec3i& v_index, const Vec3i& n_index) const {
+    Vec3f v0 = vertices[v_index.x()], v1 = vertices[v_index.y()], v2 = vertices[v_index.z()];
+    Vec3f n0 = normals[n_index.x()], n1 = normals[n_index.y()], n2 = normals[n_index.z()];
 
+    Vec3f e1 = v1 - v0, e2 = v2 - v0;
+    Vec3f s = ray.getOrigin() - v0, s1 = ray.getDirection().cross(e2), s2 = s.cross(e1);
+    Vec3f ans = (1 / s1.dot(e1)) * Vec3f(s2.dot(e2), s1.dot(s), s2.dot(ray.getDirection()));
+    float t = ans.x(), u = ans.y(), v = ans.z();
+
+
+    if (t >= ray.getTMin() && u >= 0 && v >= 0 && u + v <= 1) {
+        interaction.distance = t;
+        interaction.position = ray(t);
+        interaction.normal = ((1 - u - v) * n0 + u * n1 + v * n2).normalized();
+        interaction.type = Interaction::InterType::GEOMETRY;
+        interaction.matmodel = material->evaluate(interaction);
+
+        return true;
+    }
+    return false;
+}
+
+bool Mesh::intersect(const Ray& ray, Interaction& interaction) const {
+    for(int i = 0; i < v_indices.size() / 3; i++) {
+        Vec3i v_index(v_indices[3 * i], v_indices[3 * i + 1], v_indices[3 * i + 2]),
+                n_index(n_indices[3 * i], n_indices[3 * i + 1], n_indices[3 * i + 2]);
+        Interaction itra;
+        if (intersectTriangle(ray, itra, v_index, n_index) && itra.distance < interaction.distance) {
+            interaction = itra;
+        }
+    }
+    return interaction.type != Interaction::InterType::NONE;
 }

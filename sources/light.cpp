@@ -23,7 +23,7 @@ VPLs SquareAreaLight::getVPLs() const {
 }
 
 bool SquareAreaLight::intersect(const Ray& ray, Interaction& interaction) const {
-    //Vec3f origin = ray.getOrigin(), direction = ray.getDirection();
+
     Vec3f o = ray.getOrigin(), d = ray.getDirection();
     float width = size.x(), height = size.y();
 

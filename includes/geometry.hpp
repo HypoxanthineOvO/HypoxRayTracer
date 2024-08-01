@@ -119,6 +119,7 @@ public:
     void transformObj(Vec3f translation, float scale);
 
 private:
+    bool intersectTriangle(const Ray& ray, Interaction& interaction, const Vec3i& v_index, const Vec3i& n_index) const; 
     std::vector<Vec3f> vertices;
     std::vector<Vec3f> normals;
     std::vector<int> v_indices;

@@ -9,6 +9,8 @@ public:
     HypoxRayTracer() = delete;
     HypoxRayTracer(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, int spp = 1, int max_depth = 3): 
         camera(camera), scene(scene), spp(spp), max_depth(max_depth) {}
+    HypoxRayTracer(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene, Config config): 
+        camera(camera), scene(scene), spp(config.spp), max_depth(config.max_depth) {}
 
     void render();
 

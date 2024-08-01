@@ -50,24 +50,34 @@ Vec3f HypoxRayTracer::evalRadiance(const Ray& ray, Interaction& interaction) con
 void HypoxRayTracer::render() {
     Vec2i resolution = camera->getImage()->getResolution();
     int cnt = 0;
-
+    printf("Rendering: %.2f%%", 100.0 * cnt / resolution.x());
     #pragma omp parallel for  schedule(guided, 2), shared(cnt), num_threads(24)
     for(int dx = 0; dx < resolution.x(); dx++) {
-        if (dx % 10 == 0) {
+        if (dx % (resolution.x() / 200) == 0) {
+            //puts("");
+            fflush(stdout);
         }
+        printf("\rRendering: %.2f%%", 100.0 * cnt / resolution.x());
+        
         #pragma omp atomic
         cnt++;
         
         for(int dy = 0; dy < resolution.y(); dy++) {
             Vec3f color(0, 0, 0);
 
-            Ray ray = camera->generateRay(dx, dy);
+            // Super Sampling
+            auto sample_points = camera->generateSuperSamplingPoint(dx, dy, spp);
             
-            Interaction interaction;
-            if (scene->intersect(ray, interaction)) {
-                color += evalRadiance(ray, interaction);
+            for (const auto& sample_point: sample_points) {
+                Ray ray = camera->generateRay(sample_point.x(), sample_point.y());
+                Interaction interaction;
+                if (scene->intersect(ray, interaction)) {
+                    color += evalRadiance(ray, interaction);
+                }
             }
-            camera->getImage()->setPixel(dx, dy, color);
+
+            camera->getImage()->setPixel(dx, dy, color / static_cast<float>(spp * spp));
         }
     }
+    printf("\n");
 }

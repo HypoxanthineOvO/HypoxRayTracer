@@ -15,12 +15,10 @@ int main() {
 
     puts("==========   Camera Generated   ==========");
     // Scene
-    auto lightconfig = config.lights_config;
-    printf("SIZE: %d\n", lightconfig.size());
     std::shared_ptr<Scene> scene = std::make_shared<Scene>(config);
     puts("==========  Scene  Constructed  ==========");
     // Render
-    std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene);
+    std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene, config);
     // Time the rendering process
     puts("==========  Rendering  Started  ==========");
     auto start = std::chrono::steady_clock::now();
