@@ -25,10 +25,5 @@ struct Interaction {
     MaterialModel matmodel;
 };
 
-// For Light Former Front End
-class GBufferEntry {
-
-};
-
 
 #endif // INTERACTION_HPP_
