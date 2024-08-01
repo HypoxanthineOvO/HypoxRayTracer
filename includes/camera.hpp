@@ -55,8 +55,7 @@ public:
         up = forward.cross(right).normalized();
     }
 
-    Ray generateRay(int dx_raw, int dy_raw) {
-        float dx = dx_raw, dy = dy_raw;
+    Ray generateRay(float dx, float dy) {
         // Get the position of screen center.
         Vec3f screen_center = position - focal_length * forward;
 
