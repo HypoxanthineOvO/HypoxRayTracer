@@ -3,7 +3,7 @@
 
 #include "utils.hpp"
 #include "image.hpp"
-
+#include "configs.hpp"
 
 class Ray {
 public:
@@ -36,8 +36,16 @@ private:
 class Camera {
 public:
     Camera(): fov(45), focal_length(1.0), image(nullptr) {}
+    Camera(CameraConfig camera_config): fov(camera_config.fov), focal_length(camera_config.focal_length) {
+        position = camera_config.position;
+        lookAt(camera_config.look_at, camera_config.ref_up);
+    }
     Camera(std::shared_ptr<Image> image): position({0, -1, 0}), fov(45), focal_length(1.0), image(image) {
         lookAt(Vec3f(0, 0, 0), Vec3f(0, 0, 1));
+    }
+    Camera(CameraConfig camera_config, std::shared_ptr<Image> image): fov(camera_config.fov), focal_length(camera_config.focal_length), image(image) {
+        position = camera_config.position;
+        lookAt(camera_config.look_at, camera_config.ref_up);
     }
     
 
