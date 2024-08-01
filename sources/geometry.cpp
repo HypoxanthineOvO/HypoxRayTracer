@@ -1,4 +1,8 @@
 #include "geometry.hpp"
+#include <iostream>
+// Tiny obj loader
+#define TINYOBJLOADER_IMPLEMENTATION
+#include <tiny_obj_loader.h>
 
 bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
     // Moller Trumbore Algorithm
@@ -141,4 +145,58 @@ bool Ground::intersect(const Ray& ray, Interaction& interaction) const {
     interaction.matmodel = material->evaluate(interaction);
 
     return true;
+}
+
+void Mesh::loadObj(const std::string& path) {
+    /* 
+    Load Object filename(end with `.obj`) to this Mesh Object.
+    Noticed that this object file have no materials.
+    */
+    
+    // Load obj file
+    tinyobj::ObjReaderConfig readerConfig;
+    tinyobj::ObjReader reader;
+    if (!reader.ParseFromFile(path, readerConfig)) {
+        if (!reader.Error().empty()) {
+            std::cerr << "TinyObjReader: " << reader.Error();
+        }
+        exit(1);
+    }
+    if (!reader.Warning().empty()) {
+        std::cout << "TinyObjReader: " << reader.Warning();
+    }
+
+    auto &attrib = reader.GetAttrib();
+    auto &shapes = reader.GetShapes();
+    auto &materials = reader.GetMaterials();
+
+    // Generate vertices and normals
+    std::vector<Vec3f> vertices, normals;
+    std::vector<int> v_indices, n_indices;
+
+    for(size_t i = 0; i < attrib.vertices.size(); i += 3) {
+        vertices.push_back(Vec3f(attrib.vertices[i], attrib.vertices[i + 1], attrib.vertices[i + 2]));
+    }
+    for(size_t i = 0; i < attrib.normals.size(); i += 3) {
+        normals.push_back(Vec3f(attrib.normals[i], attrib.normals[i + 1], attrib.normals[i + 2]));
+    }
+    for(size_t shape_id = 0; shape_id < shapes.size(); shape_id++) {
+        size_t index_offset = 0;
+        for (size_t face_id = 0; face_id < shapes[shape_id].mesh.num_face_vertices.size(); face_id++) {
+            int fv = shapes[shape_id].mesh.num_face_vertices[face_id];
+            for (size_t v_id = 0; v_id < fv; v_id++) {
+                tinyobj::index_t idx = shapes[shape_id].mesh.indices[index_offset + v_id];
+                v_indices.push_back(idx.vertex_index);
+                n_indices.push_back(idx.normal_index);
+            }
+            index_offset += fv;
+        }
+    }
+
+    std::cout << "Vertices: " << vertices.size() << std::endl;
+    std::cout << "Normals: " << normals.size() << std::endl;
+}
+
+bool Mesh::intersect(const Ray& ray, Interaction& interaction) const {
+
 }
