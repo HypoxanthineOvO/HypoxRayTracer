@@ -7,6 +7,7 @@
 class Scene{
 public:
     Scene() = default;
+    Scene(const Config& config);
     virtual ~Scene() = default;
 
     bool intersect(const Ray& ray, Interaction& interaction);

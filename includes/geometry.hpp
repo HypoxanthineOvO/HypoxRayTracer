@@ -111,6 +111,7 @@ public:
         const std::vector<int>& v_indices,
         const std::vector<int>& n_indices
     ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {}
+    Mesh(const ObjectConfig& object_config);
     
     bool intersect(const Ray& ray, Interaction& interaction) const override;
 

@@ -54,6 +54,14 @@ public:
         const Vec3f& tangent
     ): Light(position, color), normal(normal), size(size), tangent(tangent) {}
 
+    SquareAreaLight(const LightConfig& light_config):
+        Light(light_config.position, Vec3f(1, 1, 1)) {
+        // TODO(Be Modified)
+        color = Vec3f(1, 1, 1);
+        normal = Vec3f(0, 0, -1);
+        tangent = Vec3f(1, 0, 0);
+    }
+
     [[nodiscard]] VPLs getVPLs() const override;
     bool intersect(const Ray& ray, Interaction& interaction) const override;
 

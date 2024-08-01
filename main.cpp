@@ -3,24 +3,19 @@
 
 #include "HypoxRayTracer.hpp"
 
-// Initialize Scene
-void Generate_Camera_Scene(std::shared_ptr<Camera> camera, std::shared_ptr<Scene> scene) {
-    /* Generate a Conell Box and related camera */
-
-}
-
 int main() {
     puts("==========    HypoxRayTracer    ==========");
     
+    // Config
+    Config config("./configs/base.json");
+    
     // Camera
     std::shared_ptr<Image> image = std::make_shared<Image>(400, 400);
-    std::shared_ptr<Camera> camera = std::make_shared<Camera>();
-    camera->setImage(image);
+    std::shared_ptr<Camera> camera = std::make_shared<Camera>(config.camera_config, image);
 
     puts("==========   Camera Generated   ==========");
     // Scene
     std::shared_ptr<Scene> scene = std::make_shared<Scene>();
-    Generate_Camera_Scene(camera, scene);
     puts("==========  Scene  Constructed  ==========");
     // Render
     std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene);

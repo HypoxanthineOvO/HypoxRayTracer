@@ -1,5 +1,16 @@
 #include "scene.hpp"
 
+Scene::Scene(const Config& config) {
+    // Set light (Now only one light)
+    light = std::make_shared<SquareAreaLight>(config.lights_config[0]);
+
+    // Set objects
+    for (auto object_config: config.objects_config) {
+        auto object = std::make_shared<Mesh>(object_config);
+        objects.push_back(object);
+    }
+}
+
 bool Scene::intersect(const Ray& ray, Interaction& interaction) {
     /* Check intersection of ray and this scene */
     Interaction itra;
