@@ -147,10 +147,10 @@ bool Ground::intersect(const Ray& ray, Interaction& interaction) const {
     return true;
 }
 
-void Mesh::Mesh(const ObjectConfig& object_config) {
+Mesh::Mesh(const ObjectConfig& object_config) {
     // Load obj file
     loadObj(object_config.path);
-    transformObj(object_config.translation, object_config.scale);
+    transformObj(object_config.translate, object_config.scale);
 }
 
 void Mesh::loadObj(const std::string& path) {
@@ -203,12 +203,11 @@ void Mesh::loadObj(const std::string& path) {
     std::cout << "Normals: " << normals.size() << std::endl;
 }
 
-bool Mesh::transformObj(Vec3f translation, float scale) {
+void Mesh::transformObj(Vec3f translation, float scale) {
     // Transform the object
     for (auto& vertex: vertices) {
         vertex = scale * vertex + translation;
     }
-    return true;
 }
 
 bool Mesh::intersect(const Ray& ray, Interaction& interaction) const {

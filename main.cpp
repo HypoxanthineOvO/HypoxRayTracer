@@ -15,7 +15,9 @@ int main() {
 
     puts("==========   Camera Generated   ==========");
     // Scene
-    std::shared_ptr<Scene> scene = std::make_shared<Scene>();
+    auto lightconfig = config.lights_config;
+    printf("SIZE: %d\n", lightconfig.size());
+    std::shared_ptr<Scene> scene = std::make_shared<Scene>(config);
     puts("==========  Scene  Constructed  ==========");
     // Render
     std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene);

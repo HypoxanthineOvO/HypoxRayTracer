@@ -46,7 +46,7 @@ void Config::loadConfig(std::string config_file_path) {
 
     printf("Camera Config - ");
     // Light Configs
-    for (auto light : raw["lights"]) {
+    for (auto light : raw["light_config"]) {
         LightConfig light_config;
         light["position"][0].get_to(light_config.position.x());
         light["position"][1].get_to(light_config.position.y());

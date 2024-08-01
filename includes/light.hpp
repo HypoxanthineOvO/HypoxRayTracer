@@ -16,6 +16,7 @@ typedef std::vector<VPL> VPLs;
 class Light {
 public:
     Light(const Vec3f& position, const Vec3f& color): position(position), color(color) {}
+    Light(const LightConfig& light_config): position(light_config.position), color(Vec3f(1, 1, 1)) {}
     virtual ~Light() = default;
 
     [[nodiscard]] virtual VPLs getVPLs() const = 0;

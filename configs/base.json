@@ -9,11 +9,13 @@
         "vertical_fov": 19.5,
         "focal_length" : 1
     },
-    "light_config" : {
-        "position": [0,1.98,0],
-        "size" : [0.5,0.5],
-        "radiance" : [17.0,12.0,5.0]
-    },
+    "light_config" : [
+        {
+            "position": [0,1.98,0],
+            "size" : [0.5,0.5],
+            "radiance" : [17.0,12.0,5.0]
+        }
+    ],
     "materials" : [
         {
             "color" : [0.725, 0.71, 0.68],
@@ -38,49 +40,49 @@
     ],
     "objects" : [
         {
-            "obj_file_path" : "../assets/left.obj",
+            "obj_file_path" : "./assets/left.obj",
             "material_name" : "red_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/right.obj",
+            "obj_file_path" : "./assets/right.obj",
             "material_name" : "green_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/floor.obj",
+            "obj_file_path" : "./assets/floor.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/ceiling.obj",
+            "obj_file_path" : "./assets/ceiling.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/back.obj",
+            "obj_file_path" : "./assets/back.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/short_box.obj",
+            "obj_file_path" : "./assets/short_box.obj",
             "material_name" : "grey_specular",
             "translate": [-0.7,0,0.6],
             "scale" : 1,
             "has_bvh" : false
         },
         {
-            "obj_file_path" : "../assets/tall_box.obj",
+            "obj_file_path" : "./assets/tall_box.obj",
             "material_name" : "grey_specular",
             "translate": [0.7,0,-0.5],
             "scale" : 1,
