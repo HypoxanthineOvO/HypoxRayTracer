@@ -29,6 +29,7 @@ constexpr float RAY_DEFAULT_MAX = 1e7;
 constexpr float PI = 3.141592653579f;
 constexpr float INV_PI = 0.31830988618379067154;
 constexpr float EPS = 1e-5;
+constexpr float ROTATE_ANGLE = 22.6f;
 
 // Utils Part
 namespace utils {
