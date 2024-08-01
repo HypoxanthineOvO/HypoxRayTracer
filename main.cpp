@@ -82,7 +82,7 @@ int main() {
     Generate_Camera_Scene(camera, scene);
     puts("==========  Scene  Constructed  ==========");
     // Render
-    std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene);
+    std::unique_ptr<HypoxRayTracer> RayTracer = std::make_unique<HypoxRayTracer>(camera, scene, 4);
     // Time the rendering process
     puts("==========  Rendering  Started  ==========");
     auto start = std::chrono::steady_clock::now();

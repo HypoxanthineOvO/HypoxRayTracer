@@ -35,6 +35,9 @@ private:
 
 class Camera {
 public:
+    using SamplePoint = Vec2f;
+    using SamplePoints = std::vector<SamplePoint>;
+    
     Camera(): fov(45), focal_length(1.0), image(nullptr) {}
     Camera(std::shared_ptr<Image> image): position({0, -1, 0}), fov(45), focal_length(1.0), image(image) {
         lookAt(Vec3f(0, 0, 0), Vec3f(0, 0, 1));
@@ -47,8 +50,29 @@ public:
         up = forward.cross(right).normalized();
     }
 
-    Ray generateRay(int dx_raw, int dy_raw) {
-        float dx = dx_raw, dy = dy_raw;
+    SamplePoints generateSuperSamplingPoint(int dx, int dy, int spp) {
+        // Use rotate grid to do super sampling
+        SamplePoints raw_bias;
+        float delta_x = 1.0f / (spp + 1), delta_y = 1.0f / (spp + 1);
+        for (int i = 0; i < spp; i++) {
+            for (int j = 0; j < spp; j++) {
+                raw_bias.push_back(SamplePoint((i + 1) * delta_x, (j + 1) * delta_y));
+            }
+        }
+        // Rotate the grid
+        Eigen::Matrix2f Rotate;
+        float theta = ROTATE_ANGLE * PI / 180;
+        Rotate << cosf(theta), -sinf(theta), sinf(theta), cosf(theta);
+        SamplePoints sample_points;
+        for (const auto& bias : raw_bias) {
+            Vec2f new_bias = Rotate * bias;
+            Vec2f point(dx + new_bias.x(), dy + new_bias.y());
+            sample_points.push_back(point);
+        }
+        return sample_points;
+    }
+
+    Ray generateRay(float dx, float dy) {
         // Get the position of screen center.
         Vec3f screen_center = position - focal_length * forward;
 

@@ -61,12 +61,16 @@ void HypoxRayTracer::render() {
         for(int dy = 0; dy < resolution.y(); dy++) {
             Vec3f color(0, 0, 0);
 
-            Ray ray = camera->generateRay(dx, dy);
-            
-            Interaction interaction;
-            if (scene->intersect(ray, interaction)) {
-                color += evalRadiance(ray, interaction);
+            auto sample_points = camera->generateSuperSamplingPoint(dx, dy, spp);
+            for (const auto& sample_point: sample_points) {
+                Ray ray = camera->generateRay(sample_point.x(), sample_point.y());
+                
+                Interaction interaction;
+                if (scene->intersect(ray, interaction)) {
+                    color += evalRadiance(ray, interaction);
+                }
             }
+            color /= static_cast<float>(spp) * static_cast<float>(spp);
             camera->getImage()->setPixel(dx, dy, color);
         }
     }
