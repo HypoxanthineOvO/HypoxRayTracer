@@ -4,7 +4,7 @@
 #include "camera.hpp"
 #include "utils.hpp"
 #include "interaction.hpp"
-#include "material.hpp"
+#include "bsdf.hpp"
 
 class Geometry {
 public:
@@ -18,15 +18,16 @@ public:
     }
 
     // Getters and Setters
-    [[nodiscard]] std::shared_ptr<Material> getMaterial() const {
+    [[nodiscard]] std::shared_ptr<BSDF> getMaterial() const {
         return material;
     }
-    void setMaterial(std::shared_ptr<Material> mat) {
+    void setMaterial(std::shared_ptr<BSDF> mat) {
         material = mat;
     }
 
 protected:
-    std::shared_ptr<Material> material;
+    std::shared_ptr<BSDF> material;
+
 };
 
 class Triangle: public Geometry {

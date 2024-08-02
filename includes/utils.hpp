@@ -56,6 +56,18 @@ namespace utils {
 		return tmp;
 	}
 
+	static inline Vec3f min(const Vec3f& a, const Vec3f& b) {
+		return Vec3f(std::min(a.x(), b.x()), std::min(a.y(), b.y()), std::min(a.z(), b.z()));
+	}
+	static inline Vec3f min(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
+		return min(min(a, b), c);
+	}
+	static inline Vec3f max(const Vec3f& a, const Vec3f& b) {
+		return Vec3f(std::max(a.x(), b.x()), std::max(a.y(), b.y()), std::max(a.z(), b.z()));
+	}
+	static inline Vec3f max(const Vec3f& a, const Vec3f& b, const Vec3f& c) {
+		return max(max(a, b), c);
+	}
 
 }
 
@@ -79,5 +91,9 @@ private:
 	std::default_random_engine engine;
 	std::uniform_real_distribution<float> dis;
 };
+
+// Declare the class
+
+class BSDF;
 
 #endif /* UTILS_HPP_ */

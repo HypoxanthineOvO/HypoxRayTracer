@@ -15,7 +15,8 @@ public:
     void render();
 
 private:
-    Vec3f evalRadiance(const Ray& ray, Interaction& interaction) const;
+    Vec3f evalDirectLighting(const Ray& ray, Interaction& interaction, RandomSampler& sampler) const;
+    Vec3f evalRadiance(const Ray& ray, Interaction& interaction, RandomSampler& sampler) const;
 
     std::shared_ptr<Camera> camera;
     std::shared_ptr<Scene> scene;

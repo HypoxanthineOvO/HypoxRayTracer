@@ -8,26 +8,27 @@ Scene::Scene(const Config& config) {
     
     ambient_light = Vec3f(0.1, 0.1, 0.1); // TODO: Temporarily set to 0.1
 
-    // Set objects
-    std::shared_ptr<Material> red_mat = std::make_shared<LambertianMaterial>(Vec3f(0.63, 0.065, 0.05));
-    std::shared_ptr<Material> green_mat = std::make_shared<LambertianMaterial>(Vec3f(0.14, 0.45, 0.091));
-    std::shared_ptr<Material> grey_mat = std::make_shared<LambertianMaterial>(Vec3f(0.725, 0.71, 0.68));
-    
-    for (auto object_config: config.objects_config) {
-        auto object = std::make_shared<Mesh>(object_config);
-        // TODO: Add true material
-        if (object_config.material_name == "red_diffuse") {
-            object->setMaterial(red_mat);
-            puts("RED");
+    // Material Config
+    std::map<std::string, std::shared_ptr<BSDF>> materials;
+    for(const auto& material_config: config.materials_config) {
+        std::shared_ptr<BSDF> material = nullptr;
+        if (material_config.type == MaterialType::Diffuse) {
+            material = std::make_shared<IdealDiffuseBSDF>(material_config);
         }
-        else if (object_config.material_name == "green_diffuse"){
-            object->setMaterial(green_mat);
-            puts("GREEN");
+        else if (material_config.type == MaterialType::Specular) {
+            material = std::make_shared<IdealSpecularBSDF>(material_config);
         }
         else {
-            object->setMaterial(grey_mat);
-            puts("GREY");
+            puts("Material Type Error!");
         }
+
+        materials[material_config.name] = material;
+    }
+
+    for (auto object_config: config.objects_config) {
+        auto object = std::make_shared<Mesh>(object_config);
+        // Add Materials by name
+        object->setMaterial(materials[object_config.material_name]);
         objects.push_back(object);
     }
 }
@@ -60,12 +61,8 @@ bool Scene::intersect(const Ray& ray, Interaction& interaction) {
     }
 
     if (itra.distance > ray.getTMin() ){
-        interaction.position = itra.position;
-        interaction.normal = itra.normal;
-        interaction.distance = itra.distance;
-        interaction.matmodel = itra.matmodel;
-        interaction.type = itra.type;
-        
+        interaction = itra;
+
         return true;
     }
     return false;

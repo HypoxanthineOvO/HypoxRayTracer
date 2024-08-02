@@ -3,6 +3,7 @@
 
 #include "utils.hpp"
 
+
 // For HypoxRayTracer
 struct MaterialModel {
     Vec3f Ambient;
@@ -18,10 +19,14 @@ struct Interaction {
         GEOMETRY
     };
     float distance {1e8}; // Distance of the ray
-    Vec3f position;
-    Vec3f normal;
-    InterType type;
+    Vec3f position {0., 0., 0.};
+    Vec3f normal {0., 0., 0.};
+    InterType type {InterType::NONE};
     Vec2f uv;
+    std::shared_ptr<BSDF> material;
+    Vec3f w_i {0., 0., 0.};
+    Vec3f w_o {0., 0., 0.};
+
     MaterialModel matmodel;
 };
 

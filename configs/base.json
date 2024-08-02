@@ -1,5 +1,5 @@
 {
-    "spp": 1,
+    "spp": 16,
     "max_depth": 12,
     "image_resolution" : [200, 200],
     "cam_config" : {
@@ -76,14 +76,14 @@
         },
         {
             "obj_file_path" : "./assets/short_box.obj",
-            "material_name" : "grey_specular",
+            "material_name" : "grey_diffuse",
             "translate": [-0.7,0,0.6],
             "scale" : 1,
             "has_bvh" : false
         },
         {
             "obj_file_path" : "./assets/tall_box.obj",
-            "material_name" : "grey_specular",
+            "material_name" : "grey_diffuse",
             "translate": [0.7,0,-0.5],
             "scale" : 1,
             "has_bvh" : false

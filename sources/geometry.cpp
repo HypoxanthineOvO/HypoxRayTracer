@@ -19,7 +19,7 @@ bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
         interaction.position = ray(t);
         interaction.normal = normal.normalized();
         interaction.type = Interaction::InterType::GEOMETRY;
-        interaction.matmodel = material->evaluate(interaction);
+        interaction.material = material;
 
         return true;
     }
@@ -46,7 +46,7 @@ bool Rectangle::intersect(const Ray& ray, Interaction& interaction) const {
         interaction.position = intersect_point;
         interaction.normal = normal.normalized();
         interaction.type = Interaction::InterType::GEOMETRY;
-        interaction.matmodel = material->evaluate(interaction);
+        interaction.material = material;
 
 
         return true;
@@ -125,7 +125,7 @@ bool Ellipsoid::intersect(const Ray& ray, Interaction& interaction) const {
         interaction.position = ray(t);
         interaction.normal = normal.normalized();
         interaction.type = Interaction::InterType::GEOMETRY;
-        interaction.matmodel = material->evaluate(interaction);
+        interaction.material = material;
 
         return true;
     }
@@ -142,7 +142,7 @@ bool Ground::intersect(const Ray& ray, Interaction& interaction) const {
     interaction.position = ray(t);  
     interaction.normal = Vec3f(0, 0, 1);
     interaction.type = Interaction::InterType::GEOMETRY;
-    interaction.matmodel = material->evaluate(interaction);
+    interaction.material = material;
 
     return true;
 }
@@ -231,7 +231,7 @@ bool Mesh::intersectTriangle(const Ray& ray, Interaction& interaction,  const Ve
         interaction.position = ray(t);
         interaction.normal = ((1 - u - v) * n0 + u * n1 + v * n2).normalized();
         interaction.type = Interaction::InterType::GEOMETRY;
-        interaction.matmodel = material->evaluate(interaction);
+        interaction.material = material;
 
         return true;
     }

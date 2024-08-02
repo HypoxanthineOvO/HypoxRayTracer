@@ -25,7 +25,7 @@ struct LightConfig {
 };
 
 struct MaterialConfig {
-    Vec3f color;
+    Vec3f color; // Also named radiance
     MaterialType type;
     std::string name;
 };
