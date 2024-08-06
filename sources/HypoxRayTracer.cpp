@@ -74,11 +74,8 @@ void HypoxRayTracer::render() {
     printf("Rendering: %.2f\%", 100.0 * cnt / resolution.x());
     #pragma omp parallel for  schedule(guided, 2), shared(cnt), num_threads(48)
     for(int dx = 0; dx < resolution.x(); dx++) {
-        if (dx % (resolution.x() / 200) == 0) {
-            //puts("");
-            fflush(stdout);
-        }
         printf("\rRendering: %.2f%%", 100.0 * cnt / resolution.x());
+        std::cout << std::flush;
         
         #pragma omp atomic
         cnt++;

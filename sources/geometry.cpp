@@ -151,6 +151,14 @@ Mesh::Mesh(const ObjectConfig& object_config) {
     // Load obj file
     loadObj(object_config.path);
     transformObj(object_config.translate, object_config.scale);
+
+    aabb = AABB(Vec3f(0, 0, 0), Vec3f(0, 0, 0));
+    for (size_t i = 0; i < v_indices.size(); i += 3) {
+        Vec3f v0 = vertices[v_indices[i]];
+        Vec3f v1 = vertices[v_indices[i+1]];
+        Vec3f v2 = vertices[v_indices[i+2]];
+        aabb.merge_with(AABB(v0, v1, v2));
+    }
 }
 
 void Mesh::loadObj(const std::string& path) {

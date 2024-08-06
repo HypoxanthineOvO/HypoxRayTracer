@@ -44,3 +44,4 @@ HypoxRayTracer_Release
 LightFormerFrontEnd
 Test
 test.cpp
+*.png

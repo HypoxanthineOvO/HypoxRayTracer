@@ -1,7 +1,7 @@
 {
-    "spp": 16,
+    "spp": 64,
     "max_depth": 12,
-    "image_resolution" : [200, 200],
+    "image_resolution" : [10, 10],
     "cam_config" : {
         "position" : [0,1,6.8],
         "look_at": [0,1,0],

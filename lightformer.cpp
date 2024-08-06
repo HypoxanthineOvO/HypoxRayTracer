@@ -1,5 +1,4 @@
-#include "LightFormerFrontEnd.hpp"
-
+#include <iostream>
 
 int main() {
     puts("========== LightFormerFrontEnd ==========");

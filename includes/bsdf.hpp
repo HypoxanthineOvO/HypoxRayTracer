@@ -17,7 +17,7 @@ public:
     virtual float sample(Interaction& interaction, RandomSampler& sampler) const = 0;
 protected:
     virtual float getPDF(Interaction& interaction) const = 0;
-    [[nodisgard]] virtual bool isDelta() const = 0;
+    [[nodiscard]] virtual bool isDelta() const = 0;
 
     // Any BSDF should have a color
     Vec3f color;

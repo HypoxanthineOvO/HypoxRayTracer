@@ -33,7 +33,15 @@ constexpr float ROTATE_ANGLE = 22.6f;
 
 // Utils Part
 namespace utils {
-
+	
+	static inline float clamp(float v, float min, float max) {
+		if (v > max) v = max;
+		else if (v < min) v = min;
+		return v;
+	}
+	static inline Vec3f clamp(const Vec3f& v, Vec3f min, Vec3f max) {
+		return Vec3f(clamp(v.x(), min.x(), max.x()), clamp(v.y(), min.y(), max.y()), clamp(v.z(), min.z(), max.z()));
+	}
 	static inline float clamp01(float v) {
 		if (v > 1) v = 1;
 		else if (v < 0) v = 0;
@@ -95,5 +103,7 @@ private:
 // Declare the class
 
 class BSDF;
+class Geometry;
+class AABB;
 
 #endif /* UTILS_HPP_ */

@@ -23,7 +23,7 @@ public:
     Light(const LightConfig& light_config): position(light_config.position), radiance(Vec3f(1, 1, 1)) {}
     virtual ~Light() = default;
 
-    [[nodisgard]] virtual Vec3f emmision(const Vec3f& pos, const Vec3f& dir) const = 0;
+    [[nodiscard]] virtual Vec3f emmision(const Vec3f& pos, const Vec3f& dir) const = 0;
 
     [[nodiscard]] virtual VPL getVPL(Interaction& interaction, RandomSampler& sampler) const = 0;
     virtual float getPDF(const Interaction& interaction) const = 0;
@@ -59,7 +59,7 @@ public:
         tangent = Vec3f(1, 0, 0);
     }
 
-    [[nodisgard]] virtual Vec3f emmision(const Vec3f& pos, const Vec3f& dir) const override;
+    [[nodiscard]] virtual Vec3f emmision(const Vec3f& pos, const Vec3f& dir) const override;
     [[nodiscard]] virtual VPL getVPL(Interaction& interaction,  RandomSampler& sampler) const override;
     virtual float getPDF(const Interaction& interaction) const override;
     

@@ -3,6 +3,7 @@
 
 #include "geometry.hpp"
 #include "light.hpp"
+#include "accel.hpp"
 
 class Scene{
 public:
@@ -24,7 +25,7 @@ public:
     }
     [[nodiscard]] std::vector<std::shared_ptr<Geometry>> getObjects() const { return objects; }
 
-
+    void buildGrid();
 
     // Naive Version
     [[nodiscard]] std::shared_ptr<Light> getLight() const { return light; }
@@ -44,6 +45,10 @@ private:
     Vec3f ambient_light;
     // Many Light Method
     //std::vector<std::shared_ptr<Light>> lights;
+
+    // For Acceleration
+    int grid_res;
+    //std::shared_ptr<OccupancyGrid> grid;
 };
 
 #endif // SCENE_HPP_

@@ -8,7 +8,7 @@ public:
     Material() = default;
     virtual ~Material() = default;
 
-    [[nodisgard]] virtual MaterialModel evaluate(
+    [[nodiscard]] virtual MaterialModel evaluate(
         Interaction& interaction
     ) const = 0;
 };

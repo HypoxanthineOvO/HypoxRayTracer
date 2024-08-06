@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "utils.hpp"
 #include "interaction.hpp"
+#include "accel.hpp"
 #include "bsdf.hpp"
 
 class Geometry {
@@ -13,8 +14,16 @@ public:
 
     virtual bool intersect(const Ray& ray, Interaction& interaction) const = 0;
 
+    void buildAccel() {
+        aabb.Update();
+    }
+
     virtual std::string getType() const {
         return "Geometry";
+    }
+
+    AABB getAABB() const {
+        return aabb;
     }
 
     // Getters and Setters
@@ -27,13 +36,14 @@ public:
 
 protected:
     std::shared_ptr<BSDF> material;
-
+    AABB aabb;
 };
 
 class Triangle: public Geometry {
 public:
     Triangle(const Vec3f& v0, const Vec3f& v1, const Vec3f& v2): v0(v0), v1(v1), v2(v2) {
         normal = (v1 - v0).cross(v2 - v0).normalized();
+        aabb = AABB(v0, v1, v2);
     }
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
@@ -49,7 +59,10 @@ protected:
 
 class Rectangle: public Geometry {
 public:
-    Rectangle(const Vec3f& position, const Vec2f& size, const Vec3f& normal, const Vec3f& tangent): position(position), size(size), normal(normal), tangent(tangent) {}
+    Rectangle(const Vec3f& position, const Vec2f& size, const Vec3f& normal, const Vec3f& tangent): 
+    position(position), size(size), normal(normal), tangent(tangent) {
+        aabb = AABB(position - Vec3f(size.x()/2, size.y()/2, 0), position + Vec3f(size.x()/2, size.y()/2, 0));
+    }
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
 
@@ -76,9 +89,13 @@ private:
 class Ellipsoid: public Geometry {
 public:
     // Construct Ellipsoid as a sphere
-    Ellipsoid(const Vec3f& pos): p(pos), a({1, 0, 0}), b({0, 1, 0}), c({0, 0, 1}) {}
+    Ellipsoid(const Vec3f& pos): p(pos), a({1, 0, 0}), b({0, 1, 0}), c({0, 0, 1}) {
+        aabb = AABB(pos - Vec3f(1, 1, 1), pos + Vec3f(1, 1, 1));
+    }
     // Construct Ellipsoid as an ellipsoid
-    Ellipsoid(const Vec3f& pos, const Vec3f& a, const Vec3f& b, const Vec3f& c): p(pos), a(a), b(b), c(c) {}
+    Ellipsoid(const Vec3f& pos, const Vec3f& a, const Vec3f& b, const Vec3f& c): p(pos), a(a), b(b), c(c) {
+        aabb = AABB(pos - a - b - c, pos + a + b + c);
+    }
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
 
@@ -92,7 +109,7 @@ private:
 
 class Ground: public Geometry {
 public:
-    Ground(float z): z(z) {}
+    Ground(float z): z(z) { }
 
     bool intersect(const Ray& ray, Interaction& interaction) const override;
 
@@ -111,7 +128,15 @@ public:
         const std::vector<Vec3f>& normals,
         const std::vector<int>& v_indices,
         const std::vector<int>& n_indices
-    ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {}
+    ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {
+        aabb = AABB(Vec3f(0, 0, 0), Vec3f(0, 0, 0));
+        for (size_t i = 0; i < v_indices.size(); i += 3) {
+            Vec3f v0 = vertices[v_indices[i]];
+            Vec3f v1 = vertices[v_indices[i+1]];
+            Vec3f v2 = vertices[v_indices[i+2]];
+            aabb.merge_with(AABB(v0, v1, v2));
+        }
+    }
     Mesh(const ObjectConfig& object_config);
     
     bool intersect(const Ray& ray, Interaction& interaction) const override;
