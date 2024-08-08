@@ -34,24 +34,10 @@ Scene::Scene(const Config& config) {
         //std::cout << "Object Bounding Box: " << object->getAABB() << std::endl;
     }
 
-    // Initialize Grid
-    //grid = std::make_shared<OccupancyGrid>(4);
 }
-
-// void Scene::buildGrid() {
-//     // Build the occupancy grid
-//     AABB scene_aabb;
-//     for (auto object: objects) {
-//         scene_aabb.merge_with(object->getAABB());
-//     }
-//     grid->setAABB(scene_aabb);
-// }
 
 bool Scene::intersect(const Ray& ray, Interaction& interaction) {
     /* Check intersection of ray and this scene */
-    // if (!grid->intersect(ray)) {
-    //     return false;
-    // }
     Interaction itra;
     itra.distance = ray.getTMax();
 
@@ -66,6 +52,7 @@ bool Scene::intersect(const Ray& ray, Interaction& interaction) {
     }
     // Check with objects
     Interaction itra_obj;
+    
     for (auto object: objects) {
         // Test with aabb first
         auto aabb = object->getAABB();

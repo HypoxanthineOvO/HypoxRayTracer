@@ -128,8 +128,10 @@ public:
         const std::vector<Vec3f>& normals,
         const std::vector<int>& v_indices,
         const std::vector<int>& n_indices
-    ): vertices(vertices), normals(normals), v_indices(v_indices), n_indices(n_indices) {
-        aabb = AABB(Vec3f(0, 0, 0), Vec3f(0, 0, 0));
+    ): vertices(vertices), normals(normals), 
+    v_indices(v_indices), n_indices(n_indices),
+    has_accel(0) {
+        aabb = AABB(Vec3f(1e8, 1e8, 1e8), Vec3f(-1e8, -1e8, -1e8));
         for (size_t i = 0; i < v_indices.size(); i += 3) {
             Vec3f v0 = vertices[v_indices[i]];
             Vec3f v1 = vertices[v_indices[i+1]];
@@ -150,6 +152,8 @@ private:
     std::vector<Vec3f> normals;
     std::vector<int> v_indices;
     std::vector<int> n_indices;
+
+    int has_accel;
 };
 
 #endif // GEOMETRY_HPP_

@@ -35,6 +35,7 @@ struct ObjectConfig {
     std::string material_name;
     Vec3f translate;
     float scale;
+    int has_accel;
 };
 
 struct Config {

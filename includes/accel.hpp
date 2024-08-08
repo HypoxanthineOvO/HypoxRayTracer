@@ -3,6 +3,7 @@
 
 #include "utils.hpp"
 #include "camera.hpp"
+#include "interaction.hpp"
 
 class AABB {
 public:
@@ -64,7 +65,12 @@ public:
     }
     // Overload "<<" operator for printing
     friend std::ostream& operator<<(std::ostream& os, const AABB& aabb) {
-        os << "AABB: " << aabb.xyz_min.transpose() << " -> " << aabb.xyz_max.transpose();
+        // Set the num of decimal places: 2
+        os << std::fixed << std::setprecision(2);
+        os << "AABB: (" << 
+        aabb.xyz_min.x() << ", " << aabb.xyz_min.y() << ", " << aabb.xyz_min.z() <<
+        ") -> (" << 
+        aabb.xyz_max.x() << ", " << aabb.xyz_max.y() << ", " << aabb.xyz_max.z() << ")";
         return os;
     }
 
@@ -75,6 +81,7 @@ private:
 
 struct GridCell {
 // Constructor
+    GridCell(): aabb(Vec3f(0,0,0), Vec3f(1,1,1)) {};
     GridCell(const Vec3f& min, const Vec3f& max): aabb(min, max) {}
 
     void add_object(std::shared_ptr<Geometry> object) {
@@ -85,6 +92,30 @@ struct GridCell {
     AABB aabb;
     // Objects
     std::vector<std::shared_ptr<Geometry>> objects;
+};
+
+class OccupancyGrid {
+public:
+    OccupancyGrid(): grid_resolution(4, 4, 4) {
+        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    }
+    OccupancyGrid(int resolution): grid_resolution(resolution, resolution, resolution) {
+        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    }
+    OccupancyGrid(int res_x, int res_y, int res_z): grid_resolution(res_x, res_y, res_z) {
+        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    }
+    OccupancyGrid(const Vec3i& resolution): grid_resolution(resolution) {
+        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    }
+
+
+    bool intersect(const Ray& ray, Interaction& interaction) const;
+
+
+    std::vector<GridCell> occupancy_grid;
+    Vec3i grid_resolution;
+    AABB aabb;
 };
 
 #endif // ACCEL_HPP_

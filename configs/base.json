@@ -1,7 +1,7 @@
 {
-    "spp": 64,
-    "max_depth": 12,
-    "image_resolution" : [10, 10],
+    "spp": 1,
+    "max_depth": 4,
+    "image_resolution" : [10,10],
     "cam_config" : {
         "position" : [0,1,6.8],
         "look_at": [0,1,0],
@@ -44,49 +44,49 @@
             "material_name" : "red_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/right.obj",
             "material_name" : "green_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/floor.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/ceiling.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/back.obj",
             "material_name" : "grey_diffuse",
             "translate": [0,0,0],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/short_box.obj",
             "material_name" : "grey_diffuse",
             "translate": [-0.7,0,0.6],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         },
         {
             "obj_file_path" : "./assets/tall_box.obj",
             "material_name" : "grey_diffuse",
             "translate": [0.7,0,-0.5],
             "scale" : 1,
-            "has_bvh" : false
+            "has_acc": 0
         }
     ]
 }
