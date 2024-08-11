@@ -296,7 +296,7 @@ void Mesh::buildAccel(int resolution) {
             }
         }
     }
-
+    printf("\rBuilding Grid: 100.0 %%\n");
     this->accel = grid;
 }
 
