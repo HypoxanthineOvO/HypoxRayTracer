@@ -7,7 +7,7 @@ int main() {
     puts("==========    HypoxRayTracer    ==========");
     
     // Config
-    Config config("./configs/small.json");
+    Config config("./configs/big.json");
     
     // Camera
     std::shared_ptr<Image> image = std::make_shared<Image>(config.image_resolution.x(), config.image_resolution.y());

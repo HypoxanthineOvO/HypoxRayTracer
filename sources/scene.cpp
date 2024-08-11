@@ -31,9 +31,11 @@ Scene::Scene(const Config& config) {
         // Add Materials by name
         object->setMaterial(materials[object_config.material_name]);
         objects.push_back(object);
-        //std::cout << "Object Bounding Box: " << object->getAABB() << std::endl;
+        // Build Accelerate grid
+        if (object_config.has_acc) {
+            object->buildAccel(object_config.has_acc);
+        }
     }
-
 }
 
 bool Scene::intersect(const Ray& ray, Interaction& interaction) {

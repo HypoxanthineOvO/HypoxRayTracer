@@ -3,6 +3,7 @@
 // Tiny obj loader
 #define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
+#include <omp.h>
 
 bool Triangle::intersect(const Ray& ray, Interaction& interaction) const {
     // Moller Trumbore Algorithm
@@ -159,6 +160,8 @@ Mesh::Mesh(const ObjectConfig& object_config) {
         Vec3f v2 = vertices[v_indices[i+2]];
         aabb.merge_with(AABB(v0, v1, v2));
     }
+
+    has_accel = object_config.has_acc;
     aabb.Update();
 }
 
@@ -248,13 +251,68 @@ bool Mesh::intersectTriangle(const Ray& ray, Interaction& interaction,  const Ve
 }
 
 bool Mesh::intersect(const Ray& ray, Interaction& interaction) const {
-    for(int i = 0; i < v_indices.size() / 3; i++) {
-        Vec3i v_index(v_indices[3 * i], v_indices[3 * i + 1], v_indices[3 * i + 2]),
-                n_index(n_indices[3 * i], n_indices[3 * i + 1], n_indices[3 * i + 2]);
-        Interaction itra;
-        if (intersectTriangle(ray, itra, v_index, n_index) && itra.distance < interaction.distance) {
-            interaction = itra;
+    if (has_accel > 0) {
+        //printf("Using Acceleration\n");
+        gridHit(ray, interaction);
+        return interaction.type != Interaction::InterType::NONE;
+    }
+    else {
+        //printf("Not Using Acceleration\n");
+        for(int i = 0; i < v_indices.size() / 3; i++) {
+            Vec3i v_index(v_indices[3 * i], v_indices[3 * i + 1], v_indices[3 * i + 2]),
+                    n_index(n_indices[3 * i], n_indices[3 * i + 1], n_indices[3 * i + 2]);
+            Interaction itra;
+            if (intersectTriangle(ray, itra, v_index, n_index) && itra.distance < interaction.distance) {
+                interaction = itra;
+            }
+        }
+        return interaction.type != Interaction::InterType::NONE;
+    }
+}
+
+void Mesh::buildAccel(int resolution) {
+    auto aabb = getAABB();
+    auto grid = std::make_shared<Grid>(resolution);
+    grid->init(aabb);
+
+    int cnt = 0;
+    #pragma omp parallel for num_threads(48) schedule(dynamic)
+    for (int i = 0; i < resolution; i++) {
+        printf("\rBuilding Grid: %f %%", 100.0 * cnt / (resolution * resolution * resolution));
+        std::cout << std::flush;
+        for (int j = 0; j < resolution; j++) {
+            for (int k = 0; k < resolution; k++) {
+                #pragma omp critical
+                cnt++;
+                auto& entry = grid->getEntry(i, j, k);
+                for(int l = 0; l < v_indices.size() / 3; l++) {
+                    Vec3i v_index(v_indices[3 * l], v_indices[3 * l + 1], v_indices[3 * l + 2]);
+                    Vec3f v0 = vertices[v_index.x()], v1 = vertices[v_index.y()], v2 = vertices[v_index.z()];
+                    if (entry.isOverlapWith(AABB(v0, v1, v2))) {
+                        #pragma omp critical
+                        grid->addIndex(i, j, k, l);
+                    }
+                }
+            }
         }
     }
-    return interaction.type != Interaction::InterType::NONE;
+
+    this->accel = grid;
+}
+
+void Mesh::gridHit(const Ray& ray, Interaction& interaction) const {
+    for (auto entry: accel->entries) {
+        if (!entry.isIntersect(ray)) {
+            continue;
+        }
+
+        for (auto index: entry.indices) {
+            Vec3i v_index(v_indices[3 * index], v_indices[3 * index + 1], v_indices[3 * index + 2]),
+                    n_index(n_indices[3 * index], n_indices[3 * index + 1], n_indices[3 * index + 2]);
+            Interaction itra;
+            if (intersectTriangle(ray, itra, v_index, n_index) && itra.distance < interaction.distance) {
+                interaction = itra;
+            }
+        }
+    }
 }

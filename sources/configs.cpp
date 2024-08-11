@@ -84,6 +84,7 @@ void Config::loadConfig(std::string config_file_path) {
         object["translate"][1].get_to(object_config.translate.y());
         object["translate"][2].get_to(object_config.translate.z());
         object["scale"].get_to(object_config.scale);
+        object_config.has_acc = object["has_acc"];
         objects_config.push_back(object_config);
     }
     printf("Object Config -\n");

@@ -1,7 +1,7 @@
 {
-    "spp": 4,
+    "spp": 16,
     "max_depth": 4,
-    "image_resolution" : [100, 100],
+    "image_resolution" : [400, 400],
     "cam_config" : {
       "position" : [0,1,6.8],
       "look_at": [0,1,0],
@@ -71,7 +71,7 @@
         "material_name" : "grey_diffuse",
         "translate": [-0.4,-0.1,0.2],
         "scale" : 4,
-        "has_acc": 4
+        "has_acc": 8
       }
     ]
   }

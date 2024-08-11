@@ -1,7 +1,7 @@
 {
-    "spp": 4,
+    "spp": 32,
     "max_depth": 10,
-    "image_resolution" : [50, 50],
+    "image_resolution" : [400, 400],
     "cam_config" : {
       "position" : [0,1,6.8],
       "look_at": [0,1,0],
@@ -68,18 +68,25 @@
         "has_acc": 0
       },
       {
+        "obj_file_path" : "./assets/stanford_dragon.obj",
+        "material_name" : "grey_diffuse",
+        "translate": [0.3,0.4,-0.2],
+        "scale" : 4,
+        "has_acc": 16
+      },
+      {
         "obj_file_path" : "./assets/stanford_bunny.obj",
         "material_name" : "grey_diffuse",
         "translate": [-0.4,-0.1,0.2],
         "scale" : 4,
-        "has_acc": 4
+        "has_acc": 8
       },
       {
         "obj_file_path" : "./assets/short_box.obj",
         "material_name" : "grey_diffuse",
         "translate": [0,0,0],
         "scale" : 1,
-        "has_acc": 4
+        "has_acc": 2
       }
     ]
   }

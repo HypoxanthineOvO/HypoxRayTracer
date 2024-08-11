@@ -78,44 +78,58 @@ private:
     Vec3f xyz_min, xyz_max;
 };
 
-
-struct GridCell {
-// Constructor
-    GridCell(): aabb(Vec3f(0,0,0), Vec3f(1,1,1)) {};
-    GridCell(const Vec3f& min, const Vec3f& max): aabb(min, max) {}
-
-    void add_object(std::shared_ptr<Geometry> object) {
-        objects.push_back(object);
-    }
-
-    // The Grid Cell
-    AABB aabb;
-    // Objects
-    std::vector<std::shared_ptr<Geometry>> objects;
-};
-
-class OccupancyGrid {
+class Grid {
+    /* The grid is specially for geometry Mesh */
 public:
-    OccupancyGrid(): grid_resolution(4, 4, 4) {
-        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    using Mesh_Indices = std::vector<int>; // The index for mesh. Use (*3) to get the real index
+    typedef struct Entry {
+        bool isOverlapWith(const AABB& aabb) const {
+            return this->aabb.isOverlapWith(aabb);
+        }
+        bool isIntersect(const Ray& ray) const {
+            return this->aabb.intersect(ray);
+        }
+        AABB aabb;
+        Mesh_Indices indices;
+    } Entry;
+    Grid(): resolution(1) {
+        entries.resize(resolution * resolution * resolution);
     }
-    OccupancyGrid(int resolution): grid_resolution(resolution, resolution, resolution) {
-        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+    Grid(int res): resolution(res) {
+        entries.resize(resolution * resolution * resolution);
     }
-    OccupancyGrid(int res_x, int res_y, int res_z): grid_resolution(res_x, res_y, res_z) {
-        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+
+    Entry& getEntry(int i, int j, int k) {
+        return entries[i * resolution * resolution + j * resolution + k];
     }
-    OccupancyGrid(const Vec3i& resolution): grid_resolution(resolution) {
-        occupancy_grid.resize(grid_resolution.x() * grid_resolution.y() * grid_resolution.z());
+
+    void init(const AABB& total_aabb) {
+        printf("Init Grid\n");
+        aabb = total_aabb;
+        Vec3f size = total_aabb.getMax() - total_aabb.getMin();
+        Vec3f cell_size = size / resolution;
+        for (int i = 0; i < resolution; i++) {
+            for (int j = 0; j < resolution; j++) {
+                for (int k = 0; k < resolution; k++) {
+                    Vec3f min = total_aabb.getMin() + Vec3f(i, j, k).cwiseProduct(cell_size);
+                    Vec3f max = min + cell_size;
+                    entries[i * resolution * resolution + j * resolution + k] = Entry{AABB(min, max), Mesh_Indices()};
+                }
+            }
+        }
     }
 
 
-    bool intersect(const Ray& ray, Interaction& interaction) const;
+    void addIndex(int i, int j, int k, int index) {
+        entries[i * resolution * resolution + j * resolution + k].indices.push_back(index);
+    }
 
-
-    std::vector<GridCell> occupancy_grid;
-    Vec3i grid_resolution;
+    // Total AABB
     AABB aabb;
+    // For Grid
+    int resolution;
+    std::vector<Entry> entries;
 };
+
 
 #endif // ACCEL_HPP_

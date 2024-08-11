@@ -14,7 +14,7 @@ public:
 
     virtual bool intersect(const Ray& ray, Interaction& interaction) const = 0;
 
-    void buildAccel() {
+    virtual void buildAccel(int resolution) {
         aabb.Update();
     }
 
@@ -37,6 +37,8 @@ public:
 protected:
     std::shared_ptr<BSDF> material;
     AABB aabb;
+    int has_accel;
+    std::shared_ptr<Grid> accel;
 };
 
 class Triangle: public Geometry {
@@ -145,6 +147,10 @@ public:
 
     void loadObj(const std::string& path);
     void transformObj(Vec3f translation, float scale);
+
+    // Acceleration
+    virtual void buildAccel(int resolution) override;
+    void gridHit(const Ray& ray, Interaction& interaction) const;
 
 private:
     bool intersectTriangle(const Ray& ray, Interaction& interaction, const Vec3i& v_index, const Vec3i& n_index) const; 
